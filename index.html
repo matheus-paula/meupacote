@@ -197,7 +197,7 @@
         $('#mapModal').modal('show');
           $.ajax({
               type: "GET",
-              url: "http://nominatim.openstreetmap.org/search.php?q="+q+"&format=jsonv2",
+              url: "https://nominatim.openstreetmap.org/search.php?q="+q+"&format=jsonv2",
               success: function(response){
                 if(response.length > 0){
                   getMiniatureMap(response[0].lat,response[0].lon);
