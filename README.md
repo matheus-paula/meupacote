@@ -1,5 +1,7 @@
 # Meu Pacote 📦
-![alt text](https://raw.githubusercontent.com/matheuspaula19/meupacote/main/img/meupacote.png)
+<p align="center">
+  <img height="300" src="https://raw.githubusercontent.com/matheuspaula19/meupacote/main/img/meupacote.png">
+</p>
 
 [![License MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
