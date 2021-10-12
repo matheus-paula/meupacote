@@ -1,0 +1,267 @@
+<html lang="pt-br">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="Rastreador detalhado de encomendas do Correios do Brasil">
+    <meta name="author" content="Matheus de Paula">
+    <title>Meu Pacote</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-F3w7mX95PdgyTmZZMECAngseQB83DfGTowi0iMjiWaeVhAn4FJkqJByhZMI3AhiU" crossorigin="anonymous">
+    <style>
+        @keyframes loading {
+          from {transform:translateX(32px)}
+          to {transform: translateX(-32px);}
+        }
+        @keyframes magglass {
+          from {transform:translateY(2px)}
+          to {transform: translateY(-6px);}
+        }
+        input {text-transform: uppercase;}
+        header{
+          transform: translateY(10em);
+          transition: cubic-bezier(0.21, 1.15, 1, 1);
+          transition-duration: 1s;
+        }
+        header.top{
+          transform: translateY(0);
+        }
+        div.status_event, div.error_event {
+          margin-left: 3rem;
+        }
+        div.error_event .status_icon{
+          top: 16px;
+        }
+        div#mapPlaceholder{
+          width:100%;
+          height:60vh;
+        }
+        div#mapModalEnd{
+          font-size: 12px;
+          margin: 1rem;
+          bottom: 0px;
+          position: absolute;
+          z-index: 999;
+          background: rgba(255,255,255,0.5);
+          left: 0;
+          padding: 10px;
+        }
+        div.loading-animation{
+          position: relative;
+          overflow: hidden;
+          display: none;
+          width: 32px;
+          height:42px;
+        }
+        div.loading-animation.visible{
+          display: block;
+        }
+        div.loading-animation div.loading-package{
+          position: absolute;
+          width: 32px;
+          height:32px;
+          transform:translateX(32px);
+          animation-name: loading;
+          animation-duration: 2.6s;
+          animation-iteration-count: infinite;
+          background: url(icons.png)  0 0;
+          background-position:173px -45px;
+        }
+        div.loading-animation div.loading-magglass{
+          position: absolute;
+          width: 32px;
+          height:32px;
+          top:6px;
+          animation-name: magglass;
+          animation-duration: 1s;
+          animation-direction: alternate;
+          animation-iteration-count: infinite;
+          background: url(icons.png)  bottom right;
+          background-position:32px 32px;
+          transition: cubic-bezier(1, 0.14, 0, 0.96);
+        }
+        div.status_icon{
+          position: absolute;
+          margin-left: -64px;
+          width: 32px;
+          height:32px;
+          top: 14px;
+          background: url(icons.png)  0 0;
+        }
+        div.status_event::before{
+          content:"";
+          margin-left: -36px;
+          position: absolute;
+          width: 2px;
+          top: 48px;
+          height: calc(100% - 32px);
+          background: #000;
+        }
+        div.status_event:nth-last-child(1):before{
+          display: none;
+        }
+        span.clock{
+          width: 16px;
+          height: 24px;
+          margin-right: 5px;
+          background: url(data:image/png;base64,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)  center center no-repeat;
+          background-size: contain;
+          position: relative;
+          display: inline-block;
+        }
+        div.showMap{
+          width: 48px;
+          height: 48px;
+          position: relative;
+          display: inline-block;
+          cursor:pointer;
+          background:url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAYAAABXAvmHAAAAAXNSR0IArs4c6QAABHpJREFUaEPtmXmoVVUUhz+LykiKKBuMpBGbVagwoshoHgRLmyeyIpSIoEBCSIj+aPjDKCioiOY5qJQGGmkk0qzMygYCSxtMyoomS/lknbjud+65Z6Kr8RZc3ubetfZev73WXtMbwnpOQ9Zz/RkE0G8LDlrg/2iBUcBE4CBg+wC4FHgDeBz4tE3QbbrQSOA64BToGhz+AR4EpgOL2wDSFoBDgMeA4SWV+g44CXi9JH9XtjYAjAFeBYZVVOYX4GDg/Ypya7E3BTAUWAjsnCjxe7jKW/G97+E0YJOE7zNgH+CPuiCaArgcuD45/BPgBEDlOml3YA7g3066DJjVLwCLEoW8+X07lNe9VgHvhYJGKNedlvgY2LMfAFTGwzvpLuC8+OJe4MxY3w2cG+t7gLNyrJNarBSmJi50PDA7OWUqcAswGpif/LYf8AEwDbg5+e044OlSGidMTQB403d2AaAbpdHFx/phFwDupfUqUxMAk4BHkhN1m7PjuzuA82N9G3BRrO8HTk/kTo4s/Z8CGAvMS078M9wnext7xSP+KPj2Bt4FNkrkdLla+aCJBTYGfshJYJ8DJwKZ0pmuKv9UTs5YAWwFrKx8/QU1S9m97gPOyGH+C3gUeDPOMJHpJunNK9oZucqe+y9fEwu4iTf9ZOVT1xY4Bni27h5NAehGX1Uo4lI9vwGsYrVYLWoKwEOvBK6pdTpcAdxQU3aNWBsANge+BLasqIgBYCfAqrQ2tQHAw68CZlbUwqbm2ooyA9jbArBplNXeaBn6AjCsWvw1orYAqMRk4OGS2kyInFCSvTtbmwA8xXB4VA+tLAANv61Q2wB2iHrfzJpHywCrUqcUrVDbAFTKZt0GP490MzN0a9QGAMuDHQHDadYDWB6ck2h5O3BhfGch+GMkwdpJzL2qAtgAsE0cDxwQ692ADQFnPkcCLwYYW8csKhl1lPs5eJ4B3OvvaD+tUN8JWeXcqxSVBWC5OwU4FdimYOcloej3wDjg5SinnRup4LZhpe0K9vgWeAiwn+hZYvcCoGvcBBj2uvF6ix76dTzOB2Kkoo4XxC1nnZuVq5fgyNEHLyCtl0cOA54ALglXy2UqAmBb+FLU6p3CRhL717eBuXGjv5Wy90AmE6DW3R84EDgW2Dphs+Q4DFiQd0YRgFeAQ0NInzRJ3Qq8FrdaU+dCMa2hu10cidF3IumKvrsBVATAMceuIeEgdgagezSKGiVQG9V0tasjuimiLulAbM1WRQCc6TjPyW5Bfoeyz4ULvRC+X0Knniy+hSMAm5ujk/5C6zsocBhQyQIy++BujMeWJ+97sIH340hxeYTKn4BfO0plB7+bAVtEiLX0djC2R3xSv8/OsuG5tKjG6hWF3MgE5cDKEUmuGXveb3UG/wliGHVIZtPflcoAyITlNVKYrA6PRFZ1pN5NEZsao5pJ8PlYG0Z7UhUA6WbKOlZ34rYLMAIwQZnoHLsLLptC+PBV0vrfd6RrmPTM0I4b7ehKKZynRE+U6zJDEwusE7gGAfTbDIMW6LcFVgPYp8kxsDRSZQAAAABJRU5ErkJggg==) center center no-repeat;
+          background-size: contain;
+        }
+    </style>
+  </head>
+  <body class="d-flex flex-column h-100">
+    <header class="d-flex">
+      <div class="container">
+        <div class="d-flex">
+          <div class="m-auto mt-3 d-flex">
+          <h1 class="text-left h3 mb-3 font-weight-normal">Meu Pacote</h1>
+          <img width="32" height="32" class="mx-3" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAYAAABXAvmHAAAAAXNSR0IArs4c6QAABDNJREFUaEPtmb9rFEEUx9/bvQTE3O5eTEiTRrSxFP8DEUSQYGOhgoXRwhiTGEGjjZWgRX6bdCKCWAgBxUaL/AV2VjbmH8jl9maTg1zu9p7MsXvsze2v2Z1cY7a6Y2dnvp83782bmYdwPM9gqVS62mq1LvDuEfFPtVr9CQB11cOhyg5HRkaKjUbjMQA8AYARoe8yACwPDAysl8vlfVXjKgEICJ8HgDMJ4vYAYEkVSC4ASeEilxKQTAAphduI+ImHABHdAYBSxMzkApECGB0dHTo8PFxCxElE1MIEEdE+Im4CwFvGmM3b8O+Ojo4eAcDzGJAKIq4DwEq1Wq2mjZFUAFxAo9GYJKIXADAWIfwAETeCwsV2xwESC5BGeECkTURLhUJhrVKpOHEWVAkSCiApXNRaIaLlfoH0AJimeRMAuCuMRliR+/UmIjaIaAYAhuNiARHfJPl0qVQyXdedRcS5mBjZBYCHjLGt4HhdAIZhbCDiVJRwIlrRdX3Vtm0mBOezfoEQ0YbjONO+xg6AZVkTRPRNFE9EfEVYDgqPCU6lIDyjI6Iljqdp2oRt29/b2xT/ZbFY3NY07XKI9bMEZy6Q4eFho9lsziAiz+w9+YOIth3HudIFYBjGDiKejVk9sgSnFEhAON9LhcaWp2+HMXauC8A0zQYAFFIkEOUgAPAeEWs8SBOE+/KajLEBEYAE8QsAIGXBKHgJy/Z0EcjsPIt3HsZY2/07MWCaZhcAbxBIOKpBQn07KNAX7i/DYfoSAfwOVYGkycCicF9DLoC8ICkNQES0pev6g7DEpwTAB0np0+1gb08zYtyqkmpRUAogCRIV26mEK3UhRauMlPC+AKSJkajgTJF32k2OxYXiZsR13faGz390XTeTzglxMH0FiLNYWouL7U4AZC0XZTHZfvoaxEFxJwDCVJ3EgKzvnrjQ/+hCXUdK78jWlHWdpGUvY38F78jrf957pBQP9UR0zXGcHxkHjNy7ZOmvWCxe1zStfY3iPX8ZY+f5786R0jCMj4h412/hbb5eDw4Obuzu7h7IDqwiiL1r/GkieomIQwENHxhj97oALMu6SES/AEAXxPIrvUVZkDwAvnAAeBpS8WlqmnbJtu3fXQD8j2VZ80S0GGFtKZAsAAnC27KIaNZxnDVfY8/lrmEYt7x7/qiKSioQGYA0wgGAV3KmGGNfggYOvV73OpwiooWwu0mvgz1EfIeIy/5lr+xeaGxs7HS9Xr+fUDjpqfgkAvgN8oDEzYAK4ZEuFOb/WUDCAFQKlwLIMiNE9KprqhHn8rhK1DKeqsgnfmyaZolXU1qtFq+qmLI5Itjeqz+saJq2mlTJCRsnE4DkjITyhZVjsxgiF4A/oMyM5LW4CKkEIASEV1fE0hCv9KxmdRWlMZA01ePj46dqtdoN13Vv8+Sp6/pn27a/AsBh0rey7/8BgJ3iXqpAdgcAAAAASUVORK5CYII=">      
+        </div>
+      </div>
+      <div class="col col-6 m-auto">
+        <div>
+          <form class="d-flex" id="track-form">
+            <input type="text" id="codigo" class="form-control" placeholder="Código de 13 dígitos" required="" autofocus="">
+            <button  class="mx-2 btn btn-lg btn-primary btn-block" type="submit">Rastrear</button>
+          </form>
+          <label for="codigo" class="text-center text-muted w-100">Insira um ou até 20 códigos de objetos dos Correios do Brasil no seguinte padrão: "AA123456789AA"</label>
+        </div>
+      </div>
+    </header>
+    <main role="main" class="mt-3 container">
+      <div class="jumbotron">
+        <div class="mt-5 m-auto loading-animation">
+          <div class="loading-package"></div>
+          <div class="loading-package" style="animation-delay: 1.2s;"></div> 
+          <div class="loading-magglass"></div>
+        </div>
+        <div id="rastreios"></div>
+      </div>
+      <div class="modal fade"  id="mapModal" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-xl" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="mapModalTitle">Onde estava seu pacote?</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Fechar">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body position-relative">
+              <div id="mapModalEnd"></div>
+              <div id="mapPlaceholder"></div>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+    <footer class="footer mt-auto py-3">
+      <div class="container">
+        <span class="text-muted">Desenvolvido por: <a href="https://github.com/matheuspaula19">Matheus de Paula</a></span>
+      </div>
+    </footer>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://www.openlayers.org/api/OpenLayers.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.maskedinput/1.4.1/jquery.maskedinput.min.js"></script>
+    <script>
+      function iconSelector(e,a){a=parseInt(a);var c="";switch((e=e.toLocaleLowerCase())+""+a){case"co5":case"co6":case"co2":c="-48px 0px";break;case"bde15":case"bdi15":case"bde45":case"bdi45":case"bdr45":case"fc10":case"par15":case"par18":case"bdr15":c="124px 0px";break;case"par16":case"par20":c="172px -188px";break;case"par10":case"par19":c="125px -188px";break;case"par13":case"bde22":case"bdi22":case"bdr22":case"fc1":case"fc47":case"par40":c="-190px -188px";break;case"bde41":case"bdi41":case"bde66":case"bdi66":case"bdr66":case"fc8":case"bde49":case"bdi49":case"bdr49":case"bde85":case"bdi85":case"bdr85":case"est1":case"est2":case"est3":case"est4":case"est5":case"est6":case"est9":case"bde57":case"bdi57":case"bdr57":case"bde58":case"bdi58":case"bdr58":case"bde59":case"bdi59":case"bdr59":case"bde84":case"bdi84":case"bdr84":case"bde46":case"bdi46":case"par24":case"bdr46":case"bde87":case"bdi87":case"bdr87":case"bde86":case"bdi86":case"bdr86":case"bde32":case"bdi32":case"bdr32":case"fc2":case"bde56":case"bdi56":case"bdr56":case"fc42":case"bde42":case"bdi42":case"bdr42":case"bde14":case"bdi14":case"bdr14":case"bde9":case"bde69":case"bdi9":case"bdi69":case"bdr9":case"bdr69":case"bde38":case"bdi38":case"bdr38":case"bdr64":case"bde55":case"bdi55":case"bdr55":case"blq1":case"blq5":case"blq11":case"blq21":case"blq22":case"bdr79":case"bde79":case"co14":case"co3":case"blq61":case"blq44":case"blq54":case"blq24":case"co10":case"par27":case"fc55":case"bde61":case"bdi61":case"bdr61":case"bde53":case"bdi53":case"bdr53":case"fc3":case"co13":case"co11":case"blq31":case"co1":case"fc11":case"bdr41":c="-238px -141px";break;case"bde5":case"bde39":case"bdi5":case"bdi39":case"bdr5":case"bdr39":case"bde33":case"bdi33":case"bdr33":case"bde34":case"co9":case"bdi34":case"blq4":case"blq41":case"blq42":case"bde4":case"bdi4":case"bdr4":case"blq30":case"bde35":case"bde36":case"bdi35":case"bdi36":case"bdr35":case"bdr36":case"bde7":case"bde8":case"bde19":case"bdi7":case"bdi8":case"bdi19":case"bdr7":case"bdr8":case"bdr19":case"fc4":case"bde30":case"bdi30":case"bdr30":case"bde47":case"bdi47":case"bdr47":case"bde25":case"bdi25":case"bdr25":case"fc7":case"bdr34":c="2px -92px";break;case"bde83":case"bdi83":case"bde26":case"bdi26":case"bdr26":case"par26":case"bde50":case"bde51":case"bde52":case"bdi50":case"bdi51":case"bdi52":case"bdr50":case"bdr51":case"bdr52":case"fc51":case"bde43":case"bdi43":case"bdr43":case"bde71":case"bdi71":case"bdr71":case"bde72":case"bdi72":case"bdr72":case"bde73":case"bdi73":case"bdr73":case"bde74":case"bdi74":case"bdr74":case"bde76":case"bdi76":case"bdr76":case"bde75":case"bdi75":case"bdr75":case"bde13":case"bdi13":case"bdr13":case"blq51":case"bde82":case"bdi82":case"bdr82":case"bde80":case"bde98":case"bdi80":case"bdr80":case"bdi98":case"bde62":case"bdi62":case"bdr62":case"bde28":case"bdi28":case"bdr28":case"bde37":case"bdi37":case"bdr37":case"bde3":case"bde12":case"bdi3":case"bdi12":case"bdr3":case"bdr12":case"fc9":case"par25":case"fc41":case"bdr83":c="-286px -92px";break;case"bde54":case"bdi54":case"bdr54":case"par23":case"fc31":case"par32":case"co12":case"co7":case"bde44":case"bdi44":case"bdr44":case"par11":case"par17":case"bde77":case"bdi77":case"bdr77":case"ldi1":case"ldi3":case"ldi4":case"bde60":case"bdi60":case"bdr60":case"par12":c="30px -140px";break;case"bde2":case"bde18":case"bde20":case"bde21":case"bdi2":case"bdi18":case"bdi20":case"bdi21":case"bdr2":case"bdr18":case"bde10":case"bdi10":case"bdr10":case"bdr20":case"bde29":case"bdi29":case"bdr29":case"bde89":case"bdi89":case"bdr89":case"bdr21":c="30px 130px";break;case"bde6":case"bdi6":case"bdr6":case"bde40":case"bdi40":case"bdr40":case"bde81":case"bdi81":case"bde48":case"bdi48":case"bdr48":case"bdr81":c="318px 130px";break;case"fc13":case"fc19":case"fc12":case"fc35":case"fc37":case"fc32":case"fc33":case"fc24":case"fc34":case"par22":case"par21":c="270px 130px";break;case"po1":case"po9":c="-96px -48px";break;case"par28":c="366px 32px";break;case"bde1":case"bde67":case"bde70":case"bdi1":case"bdi67":case"bdi70":case"bdr1":case"bdr67":case"bde23":case"bdi23":case"bdr23":case"bde68":case"bdi68":case"bdr68":case"par42":case"par34":case"bde24":case"bdi24":case"bdr24":case"ldi2":case"c08":case"bdr70":c="-48px -46px";break;case"bdr31":case"par31":case"par33":case"bdr63":case"par14":case"par30":case"par41":case"fc26":c="318px 77px";break;case"do1":case"do2":case"ro1":case"fc29":case"fc27":case"ldi11":case"ldi13":case"co4":case"ldi14":c="-94px -190px";default:"-288px -47px"}return c}
+      function getData(rastreio){
+        $("header").addClass("top");
+        $(".loading-animation").addClass("visible");
+        $.ajax({
+            type: "POST",
+            url: "https://correios.contrateumdev.com.br/api/rastreio",
+            data: JSON.stringify({"code":rastreio.replace(/ /g,''),"type":"LS"}),
+            dataType:"json",
+            contentType: 'application/json',
+            success: function(response){
+                $("#rastreios").fadeIn('100');
+                populateResult(response);
+                $(".loading-animation").removeClass("visible");                                        
+            }
+        });
+      }
+      function getLocation(q){
+        $('#mapModal').modal('show');
+          $.ajax({
+              type: "GET",
+              url: "http://nominatim.openstreetmap.org/search.php?q="+q+"&format=jsonv2",
+              success: function(response){
+                if(response.length > 0){
+                  getMiniatureMap(response[0].lat,response[0].lon);
+                  $('#mapModalEnd').text(response[0].display_name);
+                }
+              }
+          });
+      }
+      function getMiniatureMap(lat,lon){
+        $("#mapPlaceholder").html("");
+        map = new OpenLayers.Map("mapPlaceholder");
+        map.addLayer(new OpenLayers.Layer.OSM());
+        const packageIco = "data:image/png;base64,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";
+        var lonLat = new OpenLayers.LonLat(lon,lat).transform(new OpenLayers.Projection("EPSG:4326"),map.getProjectionObject()),
+        markers = new OpenLayers.Layer.Markers("Markers"),
+        size = new OpenLayers.Size(48,48),
+        offset = new OpenLayers.Pixel(-(size.w/2), -size.h),
+        icon = new OpenLayers.Icon(packageIco, size, offset);
+        map.addLayer(markers);
+        markers.addMarker(new OpenLayers.Marker(lonLat,icon));
+        map.setCenter (lonLat, 18);
+      }
+      function notNull(v){
+        return (v!== null && v !== undefined) ? v : "";
+      }
+      function populateResult(res){
+        var body = "";
+        for(var i = 0;i < res.objeto.length;i++){
+            var obj = res.objeto[i], events = "";
+            if(!obj.categoria.includes("ERRO:")){
+              for(var j = 0;j < obj.evento.length;j++){
+                var event = obj.evento[j];
+                events += populateStatus(event);
+              }
+              body += "<div class=\"card text-left mb-3\"><div class=\"card-header\">"+obj.categoria+" | "+obj.nome+"</div><div class=\"card-body\"><h5 class=\"card-title mb-4\">"+obj.numero+"</h5><div class=\"eventos\">"+events+"</div></div><div class=\"card-footer text-muted\">Última atualização: "+obj.evento[0].data+" - "+obj.evento[0].hora+"</div></div>";
+            }else{
+              body += populateError(obj);
+            }
+        }
+        $("#rastreios").html(body);
+      }
+      function populateStatus(event){
+        return "<div data-event=\""+event.tipo+event.status+"\" class=\"status_event card mb-2\"><div class=\"card-body justify-content-between d-flex\"><div><div class=\"status_icon\" style=\"background-position:"+iconSelector(event.tipo,event.status)+"\"></div><h6>"+event.descricao+"</h6><div>"+(event.unidade !== undefined ? "<span>De: </span><span>"+event.unidade.local+"</span>" : "")+(event.unidade.endereco.cep !== undefined ? "<div><span>Endereço: </span><span>"+event.unidade.endereco.bairro+" - "+event.unidade.endereco.uf+" | "+event.unidade.endereco.cep+" | "+event.unidade.endereco.logradouro+"</span></div>" : "")+"</div>"+
+          (event.destino !== undefined ? "<div><span>Para: </span><span>"+event.destino[0].local+"</span>"+(event.destino[0].endereco.cep !== undefined ? "<div><span>Endereço: </span><span>"+notNull(event.destino[0].endereco.bairro)+" - "+notNull(event.destino[0].endereco.uf)+" | "+notNull(event.destino[0].endereco.cep)+" | "+notNull(event.destino[0].endereco.logradouro)+"</span></div>" : "")+"</div>":"")+"</div>"+(exists(OpenLayers) ? "<div class=\"showMap\" data-end=\""+notNull(event.unidade.endereco.cep)+" "+notNull((event.unidade.endereco.cep == null || event.unidade.endereco.cep == undefined) ? event.unidade.local :"")+" "+notNull(event.unidade.endereco.bairro)+" "+notNull(event.unidade.endereco.localidade)+"\"></div>":"")+"</div><div class=\"card-footer text-muted d-flex\"><span class=\"clock\"></span>"+event.data+" - "+event.hora+"</div></div>";        
+      }
+      function exists(o){
+        return (typeof o === 'undefined' || o === null) ? false:true;
+      }
+      function populateError(event){
+        return "<div class=\"card text-left\"><div class=\"card-header\">"+event.numero+"</div><div class=\"card-body\"><h5 class=\"card-title mb-4\"></h5><div class=\"eventos\">"+"<div class=\"error_event card mb-2\"><div class=\"card-body\"><div class=\"status_icon\" style=\"background-position:33px -98px\"></div><h6>"+event.categoria.split(":")[1].trim()+"</h6><div></div></div></div></div></div>";
+      }
+      $(function(){
+        $("body").on("click",".showMap",function(e){
+          getLocation($(this).attr("data-end"));
+        });
+        $("#track-form").on("submit",function(e){
+          e.preventDefault();
+          $("#rastreios").fadeOut('50');
+          var value = $("#codigo").val();
+          if(value.length > 12){
+            getData(value);
+          }
+        });
+      });
+    </script>
+  </body>
+</html>
