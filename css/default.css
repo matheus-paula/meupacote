@@ -75,7 +75,7 @@ div.status_icon{
   width: 32px;
   height:32px;
   top: 14px;
-  background: url(icons.png)  0 0;
+  background: url(../img/icons.png)  0 0;
 }
 div.status_event::before{
   content:"";
