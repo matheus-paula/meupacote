@@ -53,7 +53,7 @@ div.loading-animation div.loading-package{
   animation-name: loading;
   animation-duration: 2.6s;
   animation-iteration-count: infinite;
-  background: url(icons.png)  0 0;
+  background: url(../img/icons.png)  0 0;
   background-position:173px -45px;
 }
 div.loading-animation div.loading-magglass{
@@ -65,7 +65,7 @@ div.loading-animation div.loading-magglass{
   animation-duration: 1s;
   animation-direction: alternate;
   animation-iteration-count: infinite;
-  background: url(icons.png)  bottom right;
+  background: url(../img/icons.png)  bottom right;
   background-position:32px 32px;
   transition: cubic-bezier(1, 0.14, 0, 0.96);
 }
