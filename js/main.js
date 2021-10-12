@@ -15,6 +15,18 @@ function iconSelector(e,a){a=parseInt(a);var c="";switch((e=e.toLocaleLowerCase(
             }
         });
       }
+      function showVersion(response){
+            $("#appVersion").text(response[0].tag_name);
+      }
+      function getVersion(){
+            $.ajax({
+              type: "GET",
+              url: "https://api.github.com/repos/matheuspaula19/meupacote/releases",
+              success: function(response){
+                showVersion(response)
+              }
+          });
+      }
       function getLocation(q){
         $('#mapModal').modal('show');
           $.ajax({
@@ -83,4 +95,5 @@ function iconSelector(e,a){a=parseInt(a);var c="";switch((e=e.toLocaleLowerCase(
             getData(value);
           }
         });
+        getVersion();
       });
