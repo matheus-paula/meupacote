@@ -71,7 +71,7 @@ div.loading-animation div.loading-magglass{
 }
 div.status_icon{
   position: absolute;
-  margin-left: -64px;
+  margin-left: -68px;
   width: 32px;
   height:32px;
   top: 14px;
@@ -88,6 +88,9 @@ div.status_event::before{
 }
 div.status_event:nth-last-child(1):before{
   display: none;
+}
+div.fromto_desc{
+  font-size: 14px;
 }
 span.clock{
   width: 16px;

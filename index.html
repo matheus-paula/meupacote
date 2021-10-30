@@ -6,12 +6,13 @@
     <meta name="author" content="Matheus de Paula">
     <title>Meu Pacote</title>
     <link href="css/bootstrap.min.css" rel="stylesheet">
-    <link href="css/default.css" rel="stylesheet">
+    <link href="css/openlayers/ol.css" rel="stylesheet"> 
+    <link href="css/default.css" rel="stylesheet">    
   </head>
   <body class="d-flex flex-column h-100">
     <header class="d-flex">
-      <div class="container">
-        <div class="d-flex">
+      <div class="container bg-white">
+        <div class="d-flex py-2">
           <div class="m-auto mt-3 d-flex">
           <h1 class="text-left h3 mb-3 font-weight-normal">Meu Pacote</h1>
           <img width="32" height="32" class="mx-3" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAYAAABXAvmHAAAAAXNSR0IArs4c6QAABDNJREFUaEPtmb9rFEEUx9/bvQTE3O5eTEiTRrSxFP8DEUSQYGOhgoXRwhiTGEGjjZWgRX6bdCKCWAgBxUaL/AV2VjbmH8jl9maTg1zu9p7MsXvsze2v2Z1cY7a6Y2dnvp83782bmYdwPM9gqVS62mq1LvDuEfFPtVr9CQB11cOhyg5HRkaKjUbjMQA8AYARoe8yACwPDAysl8vlfVXjKgEICJ8HgDMJ4vYAYEkVSC4ASeEilxKQTAAphduI+ImHABHdAYBSxMzkApECGB0dHTo8PFxCxElE1MIEEdE+Im4CwFvGmM3b8O+Ojo4eAcDzGJAKIq4DwEq1Wq2mjZFUAFxAo9GYJKIXADAWIfwAETeCwsV2xwESC5BGeECkTURLhUJhrVKpOHEWVAkSCiApXNRaIaLlfoH0AJimeRMAuCuMRliR+/UmIjaIaAYAhuNiARHfJPl0qVQyXdedRcS5mBjZBYCHjLGt4HhdAIZhbCDiVJRwIlrRdX3Vtm0mBOezfoEQ0YbjONO+xg6AZVkTRPRNFE9EfEVYDgqPCU6lIDyjI6Iljqdp2oRt29/b2xT/ZbFY3NY07XKI9bMEZy6Q4eFho9lsziAiz+w9+YOIth3HudIFYBjGDiKejVk9sgSnFEhAON9LhcaWp2+HMXauC8A0zQYAFFIkEOUgAPAeEWs8SBOE+/KajLEBEYAE8QsAIGXBKHgJy/Z0EcjsPIt3HsZY2/07MWCaZhcAbxBIOKpBQn07KNAX7i/DYfoSAfwOVYGkycCicF9DLoC8ICkNQES0pev6g7DEpwTAB0np0+1gb08zYtyqkmpRUAogCRIV26mEK3UhRauMlPC+AKSJkajgTJF32k2OxYXiZsR13faGz390XTeTzglxMH0FiLNYWouL7U4AZC0XZTHZfvoaxEFxJwDCVJ3EgKzvnrjQ/+hCXUdK78jWlHWdpGUvY38F78jrf957pBQP9UR0zXGcHxkHjNy7ZOmvWCxe1zStfY3iPX8ZY+f5786R0jCMj4h412/hbb5eDw4Obuzu7h7IDqwiiL1r/GkieomIQwENHxhj97oALMu6SES/AEAXxPIrvUVZkDwAvnAAeBpS8WlqmnbJtu3fXQD8j2VZ80S0GGFtKZAsAAnC27KIaNZxnDVfY8/lrmEYt7x7/qiKSioQGYA0wgGAV3KmGGNfggYOvV73OpwiooWwu0mvgz1EfIeIy/5lr+xeaGxs7HS9Xr+fUDjpqfgkAvgN8oDEzYAK4ZEuFOb/WUDCAFQKlwLIMiNE9KprqhHn8rhK1DKeqsgnfmyaZolXU1qtFq+qmLI5Itjeqz+saJq2mlTJCRsnE4DkjITyhZVjsxgiF4A/oMyM5LW4CKkEIASEV1fE0hCv9KxmdRWlMZA01ePj46dqtdoN13Vv8+Sp6/pn27a/AsBh0rey7/8BgJ3iXqpAdgcAAAAASUVORK5CYII=">      
@@ -21,14 +22,14 @@
         <div>
           <form class="d-flex" id="track-form">
             <input type="text" id="codigo" class="form-control" placeholder="Código de 13 dígitos" required="" autofocus="">
-            <button  class="mx-2 btn btn-lg btn-primary btn-block" type="submit">Rastrear</button>
+            <button  class="mx-2 btn btn-sm btn-primary" type="submit">Rastrear</button>
           </form>
           <label for="codigo" class="text-center text-muted w-100">Insira um ou até 20 códigos de objetos dos Correios do Brasil no seguinte padrão: "AA123456789AA"</label>
         </div>
       </div>
     </header>
     <main role="main" class="mt-3 container">
-      <div class="jumbotron">
+      <div>
         <div class="mt-5 m-auto loading-animation">
           <div class="loading-package"></div>
           <div class="loading-package" style="animation-delay: 1.2s;"></div> 
@@ -37,7 +38,7 @@
         <div id="rastreios"></div>
       </div>
       <div class="modal fade"  id="mapModal" tabindex="-1" role="dialog" aria-hidden="true">
-        <div class="modal-dialog modal-xl" role="document">
+        <div class="modal-dialog modal-xl">
           <div class="modal-content">
             <div class="modal-header">
               <h5 class="modal-title" id="mapModalTitle">Onde estava seu pacote?</h5>
@@ -47,10 +48,26 @@
             </div>
             <div class="modal-body position-relative">
               <div id="mapModalEnd"></div>
-              <div id="mapPlaceholder"></div>
+              <div id="mapPlaceholder" class='map'><div id="popup"></div></div>
             </div>
             <div class="modal-footer">
-              <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
+              <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal">Fechar</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal fade"  id="warningModal" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-xl">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title"></h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Fechar">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body position-relative"></div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal">Fechar</button>
             </div>
           </div>
         </div>
@@ -62,8 +79,9 @@
       </div>
     </footer>
     <script src="js/jquery-3.6.0.min.js"></script>
-    <script src="js/openlayers.js"></script>
     <script src="js/bootstrap.bundle.min.js"></script>
+    <script src="js/openlayers/ol.js"></script>
+    <script src="js/statusCode.js"></script>
     <script src="js/main.js"></script>
   </body>
 </html>
