@@ -16,5 +16,4 @@ https://www.openlayers.org/api/
 https://nominatim.openstreetmap.org
 
 ##API de rastreio dos correios 
-https://contrateumdev.com.br/documentacoes
-https://documenter.getpostman.com/view/11074732/TzJpgyny
+# A API DE RASTREIO NÃO É MAIS DE DE LIVRE ACESSO
